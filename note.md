@@ -50,3 +50,74 @@ name = 123; // 报错
 const height = 1.88; // height就是1.88类型
 ~~~
 
+# js与ts的数据类型
+
+ts是js的超集：
+
+![image-20230109003154965](./image/ts是js的超集.png)
+
+* `number`
+* `boolean`
+* `string`
+
+## 数组类型
+
+注意事项：真实的开发中，数组一般存放相同的数据类型（利于对数据进行统一处理）
+
+~~~typescript
+let name: string[] = ["abc", "cba", "nba"]; // 数组类型，且数组中存放字符串
+/*
+	等价写法
+*/
+let nums: Array<number> = [123, 321, 111]; // 数组类型，且数组中存放数字number
+~~~
+
+## Object类型
+
+~~~typescript
+let info: {
+  name: string,
+  age: number,
+  height: number
+} = {
+  name: "why",
+  age: 18,
+  height: 1.88
+}
+~~~
+
+当然也可以用`type`或者`interface`限制对象类型，后面再学
+
+不要写：`let info: object = ...`，这样代表info是一个空对象（后面我们使用info时既不能访问内部属性，也不能设置属性）
+
+## null && undefined
+
+也是基本类型：
+
+~~~typescript
+let n: null = null;
+let u: undefined = undefined;
+~~~
+
+## 函数的类型
+
+### 函数参数
+
+ts中定义一个函数时，需要明确的制定参数的类型：
+
+~~~typescript
+function sum(num1: number, num2: number) {
+  return num1 + num2;
+}
+~~~
+
+### 函数返回值
+
+返回值类型可以明确制定，也可以自动进行类型推导
+
+~~~typescript
+function sum(num1: number, num2: number): number {
+  return num1 + num2;
+}
+~~~
+
