@@ -427,3 +427,61 @@ const age3 = age as any; // 把具体类型断言为不太具体的类型any
 const age4 = age3 as string; // 把any断言为具体的类型string
 ~~~
 
+# 非空断言
+
+## plus知识：`?.`——可选链运算符
+
+
+
+---
+
+https://cloud.tencent.com/developer/article/2073555
+
+**可选链**操作符( **`?.`** )允许读取位于连接对象链深处的属性的值，而不必明确验证链中的每个引用是否有效。`?.` 操作符的功能类似于 `.` 链式操作符，不同之处在于，在引用为空([nullish](https://developer.mozilla.org/zh-CN/docs/Glossary/Nullish) ) (`[null](<https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/null>)` 或者 `[undefined](<https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/undefined>)`) 的情况下不会引起错误，该表达式短路返回值是 `undefined`。与函数调用一起使用时，如果给定的函数不存在，则返回 `undefined`。
+
+语法：
+
+~~~js
+obj?.prop
+obj?.[expr]
+arr?.[index]
+func?.(args)
+~~~
+
+---
+
+可选链只能用来访问属性（或者调用方法），但是不能用在赋值表达式的左边：
+
+~~~typescript
+type IPerson = {
+  name: string,
+  age: number,
+  friend?: {
+    name: string
+  }
+}
+
+const info: IPerson = {
+  name: "why",
+  age: 18
+}
+
+console.log(info.friend?.name); // undefined
+
+info.friend?.name = "jrd"; // 报错，可选链.?不能用在赋值表达式左侧
+
+/*
+	解决方案：
+		1. 类型缩小(类型更精细)
+*/
+if(info.friend) {
+  info.friend.name = "kobe";
+}
+~~~
+
+解决方案2——非空断言`!`（确保某个变量一定是有值的）：
+
+~~~typescript
+info.friend!.name = "james"; // 有点危险，只有确保friend一定有值的情况下才能使用
+~~~
+
