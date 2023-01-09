@@ -660,3 +660,39 @@ calc(function(){ // 这里传给calc的函数一个参数都没有，但是不�
 
 `forEach`接收的函数也提供了三个参数：item、index以及this，但是我们也经常只使用item一个参数呀，所以说ts对函数的参数个数进行检测本来就是不合理的，那将会让ts非常难用
 
+# why老师箴言
+
+**TS对于很多类型的检测报不报错，取决于它的内部规则，而并不是说逻辑或者思想上的问题**
+
+举个例子：
+
+~~~typescript
+interface IPerson {
+  name: string
+  age: number
+}
+const info: IPerson = {
+  name: "why",
+  age: 18,
+  height: 1.88, // 从这里就已经开始报错了，因为IPerson接口没有指定height属性 
+  address: "sd"
+}
+~~~
+
+以下代码不报错：
+
+~~~typescript
+interface IPerson {
+  name: string
+  age: number
+}
+const p = {
+  name: "why",
+  age: 18,
+  height: 1.88,
+  address: "sd"
+}
+const info: IPerson = p
+~~~
+
+这个看似离谱的代码没报错，所以说，报不报错都是ts的规则而已
