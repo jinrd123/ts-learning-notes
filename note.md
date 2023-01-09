@@ -274,3 +274,19 @@ function example(params: xxx): [str: string, (newValue: number) => void] {
 }
 ~~~
 
+# 联合类型 && 交叉类型
+
+## 联合类型
+
+用`|`来连接类型从而构造出的新类型，因为变量可能是其中的任何一种类型，所以一般需要搭配类型缩小推断出更加具体的类型
+
+~~~typescript
+function printId(id: number | string) {
+  if(typeof id === "string") {
+    console.log(id.toUpperCase());
+  } else {
+    console.log(id);
+  }
+}
+~~~
+
