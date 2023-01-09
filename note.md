@@ -538,3 +538,89 @@ const info3 = {
 request(info3.url, info3.method);  // 这里info3.url是一个字符串字面量类型，request的第一个参数是string类型，这样把一个更精细的值赋值给宽泛的值是ok的
 ~~~
 
+# 类型缩小
+
+定义：
+
+Type Narrowing，也译作类型收窄
+
+我们可以通过类似于`typeof padding === "number"`的判断语句，来改变ts的执行路径
+
+在给定的执行路径中，我们可以缩小比声明时更小的类型，这个过程称之为缩小（Narrowing）
+
+而我们编写的`typeof padding === "number"`可以称之为**类型保护（类型缩小的逻辑判断语句）**
+
+常见的类型保护：
+
+* `typeof`
+* 平等缩小：`===`/`!==`
+* `instanceof`
+* `in`
+* ...
+
+~~~typescript
+// 1. typeof：使用最多
+function printID(id: number | string) {
+  if(typeof id === "string") {
+    console.log(id.length, id.split(""));
+  }else {
+    console.log(id);
+  }
+}
+
+// 2. ===平等缩小：方向的类型判断
+type Direction = "left" | "right" | "up" | "down";
+function switchDirection(direction: Direction) {
+  if(direction === "left") {
+    console.log("left相关逻辑");
+  }else if(direction === "right") {
+    console.log("right相关逻辑");
+  }
+  ...
+}
+  
+// 3. instanceof：日期类型的判断
+function printDate(data: string | Date) {
+  if(date instanceof Date) {
+    console.log(date.getTime());
+  } else {
+    console.log(date);
+  }
+}
+
+// 4. in——判断对象身上有无某个属性方法
+interface ISwim {
+  swim: () => void
+}
+interface IRun {
+  run: () => void
+}
+function move(animal: ISwim | IRun) {
+  if("swim" in animal) {
+    animal.swim();
+  }else if("run" in animal) {
+    animal.run();
+  }
+}
+const fish: ISwim = {
+  swim: function() {},
+}
+const dog: IRun = {
+  run: function() {},
+}
+move(fish);
+move(dog);
+~~~
+
+move方法的错误写法：
+
+~~~typescript
+function move(animal: ISwim | IRun) {
+  if(animal.swim) { // 报错，因为animal为联合类型，类型不确定，不可以直接访问属性（访问属性这个行为从ts语法上出错了）
+    animal.swim();
+  }
+  ...
+}
+~~~
+
+换句话说，`in`运算符可以避开`.`运算符访问对象属性的行为，这个行为是会被ts进行检查的；ts没有针对in的特殊检查，所以可以判断对象是否有某个属性
