@@ -766,3 +766,16 @@ function foo(x: number, y?: number) {
 foo(10);
 ~~~
 
+## 默认参数
+
+1. 函数的参数可以有默认值，在有默认值的情况下参数的类型注解可以省略
+2. 有默认值的参数，可以接收一个undefined值（ts特点，没啥实用性知道就行）
+
+~~~typescript
+function foo(x: number, y = 100) {
+  console.log(y + 10);
+}
+foo(10);
+foo(10, undefined); // 没问题
+~~~
+
