@@ -290,3 +290,91 @@ function printId(id: number | string) {
 }
 ~~~
 
+# type && interface
+
+## 类型别名type
+
+~~~typescript
+// 赋值的方式定义一个type
+type PointType = { x: number, y: number, z?: number };
+function printCoordinate(point: PointType) {
+  console.log(point.x, point.y, point.z);
+}
+~~~
+
+type也可以给基本类型起别名：`type MyNumber = number`
+
+## 接口声明
+
+~~~typescript
+// 直接声明一个接口
+interface PointType {
+  x: number
+  y: number
+  z?: number
+}
+function printCoordinate(point: PointType) {
+  console.log(point.x, point.y, point.z);
+}
+~~~
+
+**两者在定义对象类型的变量时，基本没有区别**
+
+## type与interface的区别
+
+* type类型使用范围更广，type可以声明任何类型；但是接口类型只能用来声明对象
+
+* type不允许相同名称的别名同时存在；interface可以多次声明同一个接口名称，相当于对接口内容的叠加
+
+~~~typescript
+type PointType1 = {
+  x: number
+  y: number
+}
+type PointType1 = { // 重复定义type PointType1，报错
+  z?: number
+}
+
+interface PointType2 {
+  x: number
+  y: number
+}
+interface PointType2 {
+  z: number
+}
+const point: PointType2 = { // 报错：缺少了z属性
+  x: 100,
+  y: 200,
+}
+~~~
+
+* interface支持继承
+
+~~~typescript
+interface IPerson {
+  name: string
+  age: number
+}
+interface IKun extends IPerson {
+  kouhao: string
+}
+const ikun1: Ikun = {
+  kouhao: "你干嘛，哎呦",
+  name: "jrd",
+  age: 20
+}
+~~~
+
+* interface可以被类实现（后期ts面向对象时再学）
+
+~~~typescript
+class Person implements IPerson {
+  ...
+}
+~~~
+
+### 总结：
+
+**如果是非对象类型的定义用type**，毕竟使用范围更广，可以定义的类型更多；**如果是对象类型的声明那么使用interface**，因为可以重复声明，还有一些其他特性等，可拓展性更强
+
+但是，其实即使对于对象类型的定义，两者也是随便使用的，毕竟不要忘了ts的核心作用就是在开发阶段，编译阶段给我们做类型限制。两者都能无差别的达成这一目的。
