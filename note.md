@@ -485,3 +485,56 @@ if(info.friend) {
 info.friend!.name = "james"; // 有点危险，只有确保friend一定有值的情况下才能使用
 ~~~
 
+# 字面量类型
+
+字面量类型就是某个基本类型的具体值作为类型，比如一个具体的字符串或者一个具体的数字，例如：
+
+~~~typescript
+const name: "why" = "why";
+let age: 18 = 18;
+// 单个字面量没啥意义，一般将多个字面量联合起来
+type Direction = "left" | "right" | "up" | "down";
+const d1: Direction = "left"; // Direction类型的变量只能取四个值中的一个
+~~~
+
+例子：
+
+~~~typescript
+// 封装请求方法：
+type MethodType = "get" | "post";
+function request(url: string, method: MethodType) {
+  ...
+}
+request("http://localhost", "post");
+
+const info = {
+  url: "xxx",
+  method: "post",
+}
+request(info.url, info.method); // 报错：info.method是一个string类型，而request的第二个参数是一个字符串类型的字面量，说白了就是一个字面量类型，自然类型不匹配
+
+// 解决方案1:类型断言——将string类型断言为更具体的字符串字面量
+request(info.url, info.method as "post");
+  
+// 解决方案2:直接让我们的info对象类型是一个字面量类型
+const info2: { url: string, method: "post" } = {
+  url: "xxx",
+  method: "post"
+}
+request(info2.url, info2.method);
+~~~
+
+## as const
+
+让一个对象的所有属性都变成字面量类型
+
+~~~typescript
+// 续上：解决方案3:as const
+const info3 = {
+  url: "xxx",
+  method: "post",
+} as const; // 此时info3的类型：{ url: "xxx", method: "post" }
+
+request(info3.url, info3.method);  // 这里info3.url是一个字符串字面量类型，request的第一个参数是string类型，这样把一个更精细的值赋值给宽泛的值是ok的
+~~~
+
