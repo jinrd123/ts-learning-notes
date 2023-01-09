@@ -121,3 +121,17 @@ function sum(num1: number, num2: number): number {
 }
 ~~~
 
+# plus：mac常用快捷键
+
+## 工具类
+
+* `shift + control + command + 4`：截图一个区域到粘贴板
+
+## 编程类
+
+* `commond + 方向键`：光标快速移动至（文件最上方/文件最下方/行末/行首）——（上/下/左/右）
+* `option + ⬅️`：光标移动至单词的开头
+* `option + ➡️`：光标移动至单词的末尾
+
+* `shift + option + ➡️`：向右选中至当前行末尾
+* `shift + option + ⬅️`：向右选中至当前行首
