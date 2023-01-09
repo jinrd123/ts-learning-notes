@@ -224,3 +224,30 @@ delayExecFn((name, age) => {
 ~~~
 
 注意（了解即可）：当基于上下文类型推导推导出返回类型为void的时候，并不会强制函数一定不能返回内容，就是说我们写`arr.forEach()`时，提示函数参数应为`(item: xxx, index: number, this: xxx) => void`，这里的void就是推导出来的，我们可以在函数体中`return`。
+
+## never类型（极不常见）
+
+应用场景：
+
+1. 开发中很少实际去定义never类型，某些情况下会自动进行类型推导出never（死循环函数、throw Error的函数...）
+
+2. 开发框架（工具）的时候可能会用到never
+
+~~~typescript
+function handleMessage(message: string | number) {
+  switch(typeof message) {
+      case: "string":
+      	console.log(message.length);
+      	break;
+      case: "number":
+      	console.log(message);
+      	break;
+      /*
+      	handleMessage是我们封装的一个工具函数，其正常使用过程永远也不会进入到default逻辑中，但是如果哪一天想要开发这个函数本身，我们拓展了message参数的类型，比如message: string | number ｜ boolean，但是我们函数体中并没有对应处理布尔类型的逻辑，这样就会走到default中，never类型的变量被赋值，就会报错，提示开发人员添加相关处理逻辑
+      */
+    	default:
+      	const check: never = message;	
+  }
+} 
+~~~
+
