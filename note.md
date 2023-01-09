@@ -741,3 +741,28 @@ function factory(fn: IContructorPerson) {
 factory(Person); // Person构造函数肯定可以用new进行调用，并且返回一个Person实例（完全契合IContructorPerson接口）
 ~~~
 
+## 可选参数
+
+见上面：函数类型—函数类型表达式—函数类型参数的个数不进行校验 其实是**一个函数如果只有函数类型表达式进行限制，那么他的参数个数是不进行限制的**。但是如果在函数声明时定义的参数列表，那么每个参数默认都是必选参数：
+
+~~~typescript
+function foo(x: number, y: number) {
+  
+}
+
+foo(10); // 报错：函数声明时的两个参数都是必须的
+~~~
+
+可选参数：
+
+~~~typescript
+// 这样y就是可选的，但是如果函数调用时不传y，那么其就是undefined类型，所以可选参数？符就代表参数的定义的类型与undefined的联合类型
+// 等价于 y: unmber | undefined
+function foo(x: number, y?: number) {
+  if(y !== undefined) {
+    console.log(y + 10);
+  }
+}
+foo(10);
+~~~
+
