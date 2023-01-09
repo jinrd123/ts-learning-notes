@@ -624,3 +624,21 @@ function move(animal: ISwim | IRun) {
 ~~~
 
 换句话说，`in`运算符可以避开`.`运算符访问对象属性的行为，这个行为是会被ts进行检查的；ts没有针对in的特殊检查，所以可以判断对象是否有某个属性
+
+# 函数类型表达式
+
+函数本身也是一个变量（标识符），所以本身也可以有类型限制（函数类型表达式）：
+
+~~~typescript
+type BarType = (num1: number) => number; // 函数类型表达式
+const bar: BarType = (arg: number): number => {
+  return 123;
+}
+~~~
+
+**函数类型表达式中，参数列表中，参数的名称不能省略（如上的num1）**，某些语言中可以只写变量类型，但是TypeScript不可以！！！省略之后表达的意思就变了：
+
+~~~typescript
+type BarType = (number) => number; // 这样省略参数名其实意思是：(number: any) => number
+~~~
+
