@@ -642,3 +642,21 @@ const bar: BarType = (arg: number): number => {
 type BarType = (number) => number; // 这样省略参数名其实意思是：(number: any) => number
 ~~~
 
+## 函数类型参数的个数不进行校验
+
+ts对于传入的函数类型的参数个数不进行检测：
+
+~~~typescript
+type CalcType = (num1: number, num2: number) => number;
+function calc(calcFn: CalcType) { // calc接收的函数从函数类型表达式CalcType来看，应该接受2个参数
+  calcFn(10, 20);
+}
+calc(function(){ // 这里传给calc的函数一个参数都没有，但是不报错，原因如上⬆️
+  return 123;
+})
+~~~
+
+其实很好理解：
+
+`forEach`接收的函数也提供了三个参数：item、index以及this，但是我们也经常只使用item一个参数呀，所以说ts对函数的参数个数进行检测本来就是不合理的，那将会让ts非常难用
+
