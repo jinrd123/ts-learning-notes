@@ -193,3 +193,34 @@ if(typeof foo === "string") { // 使用typeof运算符进行类型缩小
 }
 ~~~
 
+## void类型
+
+出现场景：
+
+TS中如果一个函数没有任何返回值，那么这个函数的返回值类型的类型注解就是`void`。（如果返回值是void类型，那么函数体中我们也可以显式`return undefined`，ts编译器允许这样做而已）
+
+应用场景：
+
+指定函数类型的返回值是void：
+
+~~~typescript
+type FooType = () => void;
+const foo: FooType = () => {};
+// 其实像foo函数，函数没有返回值，其实也没有必要去刻意指定其返回值为void，毕竟类型推导会指出其返回值为void
+
+// 实际中的使用场景一般出现在：
+type ExecFnType = (...args: any[]) => void;
+function delayExecFn(fn: ExecFnType) {
+  setTimeout(() => {
+    fn("why", 18);
+  }, 1000)
+}
+delayExecFn((name, age) => {
+  console.log(name, age);
+})
+/*
+	一个函数的参数为函数类型，我们一般会规定函数参数的类型，这时候会用到void
+*/
+~~~
+
+注意（了解即可）：当基于上下文类型推导推导出返回类型为void的时候，并不会强制函数一定不能返回内容，就是说我们写`arr.forEach()`时，提示函数参数应为`(item: xxx, index: number, this: xxx) => void`，这里的void就是推导出来的，我们可以在函数体中`return`。
