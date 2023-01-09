@@ -251,3 +251,26 @@ function handleMessage(message: string | number) {
 } 
 ~~~
 
+## tuple（元组）类型
+
+数组中存放的数据类型不同，且其每一项都有明确的类型限制：
+
+~~~typescript
+const info: [string, number, number] = ["why", 18, 1.88];
+~~~
+
+使用场景：
+
+作为函数的返回值类型（某些函数返回一个数组，比如数组的第一项为字符串，第二项为一个函数）：
+
+~~~typescript
+function example(params: xxx): [str: string, (newValue: number) => void] {
+  ...
+  let str = "..."
+  function setValue(newValue: number) {
+    ...
+  }
+  return [str, setValue];
+}
+~~~
+
