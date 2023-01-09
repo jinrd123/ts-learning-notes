@@ -403,3 +403,27 @@ class Person implements IPerson {
 **如果是非对象类型的定义用type**，毕竟使用范围更广，可以定义的类型更多；**如果是对象类型的声明那么使用interface**，因为可以重复声明，还有一些其他特性等，可拓展性更强
 
 但是，其实即使对于对象类型的定义，两者也是随便使用的，毕竟不要忘了ts的核心作用就是在开发阶段，编译阶段给我们做类型限制。两者都能无差别的达成这一目的。
+
+# 类型断言（强制指定类型）
+
+例子：
+
+（其实下面这个例子就是类型断言的核心所在：**通过断言方便我们去使用变量**）
+
+~~~typescript
+const imgEl = document.querySelector(".img") as HTMLImageElement; // 如果我们不把imgEl断言为HTMLImageElement，那么默认它的类型就是Element ｜ null——我们操作其属性时（比如imgEl.src="xxx"）就需要进行类型缩小等操作
+imgEl.src = "xxx";
+imgEl.alt = "yyy";
+~~~
+
+断言规则：断言为更加具体的类型或者不太具体的类型（any/unknown）类型：
+
+~~~typescript
+const age: number = 18;
+const age2 = age as string; // 把number断言成string，报错
+
+// 以下代码从ts类型检测的角度来说是正确的，但是代码本身逻辑有问题（迷迷糊糊，好像没啥实际用）——TSbug
+const age3 = age as any; // 把具体类型断言为不太具体的类型any
+const age4 = age3 as string; // 把any断言为具体的类型string
+~~~
+
