@@ -779,3 +779,14 @@ foo(10);
 foo(10, undefined); // 没问题
 ~~~
 
+## 剩余参数
+
+说白了就是js中函数的参数列表写一个数组的解构，然后调用时所有的参数都放入这个数组中：
+
+~~~typescript
+function sum(...nums: (number | string)[]) {
+  
+}
+foo("anv", 123, "cba");
+~~~
+
