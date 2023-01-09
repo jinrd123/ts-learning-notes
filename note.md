@@ -290,6 +290,31 @@ function printId(id: number | string) {
 }
 ~~~
 
+## 交叉类型
+
+`&`连接多个类型，表示要同时满足多个类型
+
+应用场景：用`&`来组合对象类型：
+
+~~~typescript
+interface IKun {
+  name: string
+  age: number
+}
+interface ICoder {
+  name: string
+  coding: () => void
+}
+
+const jrd: IKun & ICoder = {
+  name: "jrd",
+  age: 18,
+  coding: function() {
+    console.log("coding");
+  }
+}
+~~~
+
 # type && interface
 
 ## 类型别名type
