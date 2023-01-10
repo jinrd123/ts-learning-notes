@@ -1118,3 +1118,24 @@ printPerson({name: "kobe", age: 30, running: function() {}}); // 通过（鸭子
 printPerson(new Dog("旺财", 3)); // 通过类型检测
 ~~~
 
+
+
+## 类具备的类型特性
+
+类的作用：
+
+1. 可以创建对应的实例对象
+2. 类本身可以作为其实例对象的类型
+3. 类也可以当作一个有构造签名的函数
+
+~~~typescript
+class Person {}
+// 类作为其实例的类型
+const p: Person = new Person();
+function printPerson(p: Person) {}
+
+// 当作一个有构造签名的函数
+function factory(ctor: new () => void) {}
+factory(Person)
+~~~
+
