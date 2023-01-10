@@ -1139,3 +1139,23 @@ function factory(ctor: new () => void) {}
 factory(Person)
 ~~~
 
+
+
+# 对象类型的属性修饰符
+
+* 可选属性？
+* 只读属性readonly
+
+~~~typescript
+interface IPerson {
+  name: string
+  age?: number
+  readonly height: number
+}
+~~~
+
+
+
+
+
+3日上午： 1：31——索引签名
