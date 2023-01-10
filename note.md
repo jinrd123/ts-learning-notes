@@ -949,3 +949,70 @@ const store: IStore = {
 解析：毕竟在`"noImplicitThis": true`的情况下，函数中使用this都是需要明确指定this的类型的，eating函数和running函数我们希望IState类型的变量去调用，所以我们第一个参数需要手动指定`this: IState`，但是`store: IStore & ThisType<IState>`之后，即store变量的类型添加上`& ThisType<IState>`之后，store的属性方法的this就都指定为`IState`类型了
 
 Pinia的源码里就是这么操作的
+
+# TS面向对象
+
+其实当下的前端开发中，面向对象的编程其实用的越来越少了，vue3以及react函数式组件结合hook的开发模式，大家都更倾向于函数式编程（更加灵活）。
+
+## 成员属性必须先在class中声明，不然直接constructor中this访问属性会报错：
+
+~~~typescript
+class Person {
+  name: string; // 声明成员属性
+  age: number;
+  constructor(name: string, age: number) {
+    this.name = name;
+    this.age = age;
+  }
+}
+export {}; // 不写会报错Person命名冲突（具体和谁冲突不清楚，可能是tsc生成的js文件中的Person？）
+~~~
+
+ 
+
+---
+
+plus：export暴露变量之后ts文件就会变成一个模块，变量方法等都属于这个模块（形成一个独立的命名空间）
+
+~~~typescript
+/**
+ * 变量名冲突问题
+ */
+let name = 'tom'; // 默认情况下，无法使用变量名name等，与全局对象window的name属性出现了重名
+
+export {}; // 解决：使用export将文件声明为一个模块module，变量被限制在当前模块作用域下，不会再产生冲突
+~~~
+
+---
+
+
+
+成员属性必须进行初始化，constructor中初始化可以，也可以属性声明时进行初始化（这样其实就不用进行类型注解了）：
+
+~~~typescript
+class Person {
+  name = "";
+  age = 0;
+}
+export {};
+~~~
+
+或者不想初始化，用非空断言(逃避ts语法检查罢了hhh)：
+
+~~~typescript
+class Person {
+  name!: string;
+  age!: number;
+}
+export {};
+~~~
+
+
+
+## 成员修饰符
+
+`public`、`private`、`protected`写在成员属性声明或者成员方法的定义之前，给类成员添加访问权限：
+
+* `public`：默认属性，可任意访问
+* `private`：私有属性，只有在类本身的内部（class定义体内部）才能访问
+* `protected`：保护类型：只有在类本身以及子类的内部才能访问
