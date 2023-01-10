@@ -857,3 +857,86 @@ function foo(this: { name: string }, info: { name: string }) {
 foo.call({ name: "why" }, { name: "kobe" }); // 输出：{ name: "why" }, { name: "kobe" }
 ~~~
 
+# this相关的ts内置工具
+
+## ThisParameterType< T >
+
+获取T类型中的this的类型：
+
+~~~typescript
+function foo(this: { name: string }, info: { name: string }) {
+  console.log(this, info);
+}
+type FooType = typeof foo; // type FooType = (this: {name:string}, info: {name: string}) => void
+type FooThisType = ThisParameterType<>; // type FooThisType = { name: string }
+~~~
+
+## OmitThisParameter< T >
+
+去除T类型中的this之后的函数类型：
+
+~~~typescript
+function foo(this: { name: string }, info: { name: string }) {
+  console.log(this, info);
+}
+type FooType = typeof foo; // type FooType = (this: {name:string}, info: {name: string}) => void
+type pureFooType = OmitThisParameter<FooType>; // type pureFooType = (info: {name:string}) => void
+~~~
+
+## ThisType< T >
+
+一个对象a（A类型），a里面除了各种属性外，有很多的方法，这些方法的函数体中都用到了this变量，这时（基于配置了`"noImplicitThis": true`，this需要明确指明的情况）我们定义这些函数时第一个参数都需要用来手动指定this的类型，为了简化这种重复的操作，这时候我们可以让对象a的类型为`A & ThisType<希望绑定给方法的this的类型X>`，这样就相当于给a对象的所有方法里的this都指定了`X`类型：
+
+~~~typescript
+interface IState {
+  name: string
+  age: number
+}
+interface IStore {
+  state: IState
+  eating: () => void
+  running: () => void
+}
+const store: IStore & ThisType<IState> = {
+  state: {
+    name: "jrd",
+    age: 18,
+  },
+  eating: function() {
+    console.log(this.name);
+  },
+  running: function() {
+    console.log(this.age);
+  }
+}
+~~~
+
+等价于：
+
+~~~typescript
+interface IState {
+  name: string
+  age: number
+}
+interface IStore {
+  state: IState
+  eating: () => void
+  running: () => void
+}
+const store: IStore = {
+  state: {
+    name: "jrd",
+    age: 18,
+  },
+  eating: function(this: IState) {
+    console.log(this.name);
+  },
+  running: function(this: IState) {
+    console.log(this.age);
+  }
+}
+~~~
+
+解析：毕竟在`"noImplicitThis": true`的情况下，函数中使用this都是需要明确指定this的类型的，eating函数和running函数我们希望IState类型的变量去调用，所以我们第一个参数需要手动指定`this: IState`，但是`store: IStore & ThisType<IState>`之后，即store变量的类型添加上`& ThisType<IState>`之后，store的属性方法的this就都指定为`IState`类型了
+
+Pinia的源码里就是这么操作的
