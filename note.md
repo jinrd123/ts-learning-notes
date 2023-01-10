@@ -1069,3 +1069,24 @@ class Person {
 const p = new Person("why", 18, 1.88);
 ~~~
 
+
+
+## 抽象类abstract
+
+抽象类中可以定义抽象方法（没有函数实现），抽象类供其他类继承，子类要实现抽象类中的抽象方法：
+
+~~~typescript
+abstract class Shape {
+  abstract getArea();
+}
+
+class Rectangle extends Shape {
+  constructor(public width: number, public height: number) {
+    super();
+  }
+  getArea() {
+    return this.width * this.height;
+  }
+}
+~~~
+
