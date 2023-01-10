@@ -809,3 +809,22 @@ ts函数重载的语法构成：
 若干个函数重载签名和一个有实现体的通用函数，当我们调用函数时，ts根据我们传入的参数类型来决定执行函数体时，到底执行哪一个函数重载签名（有实现体的函数，是不能被直接调用的）
 
 平时业务开发基本用不到，一般出现在封装一些通用工具的场景中
+
+## 联合类型 && 函数重载的选择
+
+需求：定义一个函数，传入字符串或者数组，返回他们的长度：
+
+~~~typescript
+// 1. 使用联合类型来实现
+function getLength(a: string | any[]) {
+  return a.length;
+}
+// 2. 使用函数重载来实现
+function getLength(a: string): number;
+function getLength(a: any[]): number;
+function getLength(a: any) {
+  return a.length;
+}
+~~~
+
+**选择原则：如果需求能使用联合类型来实现，尽量选择联合类型来实现**
