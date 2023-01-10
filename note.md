@@ -1056,3 +1056,16 @@ class Person {
 }
 ~~~
 
+
+
+## 参数属性（语法糖：属性声明 + 构造函数赋值）
+
+构造函数的参数列表里写修饰符 等价于 成员属性声明 + 构造函数内部进行赋值
+
+~~~typescript
+class Person {
+  constructor(public name: string, private age: number, readonly height: number) {}
+}
+const p = new Person("why", 18, 1.88);
+~~~
+
