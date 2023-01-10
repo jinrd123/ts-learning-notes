@@ -1090,3 +1090,31 @@ class Rectangle extends Shape {
 }
 ~~~
 
+
+
+## TS类型检测——鸭子类型
+
+TypeScript对于类型检测的时候使用鸭子类型
+
+鸭子类型：如果一只鸟，走起来像鸭子，游起来像鸭子，看起来像鸭子，那么我们可以认为他就是一只鸭子
+
+ts鸭子类型：只关心属性和行为，而不关心具体是不是对应的类型：
+
+~~~typescript
+class Person {
+  constructor(public name: string, public age: number) {}
+  running() {}
+}
+class Dog {
+  constructor(public name: string, public age: number) {}
+  running() {}
+}
+function printPerson(p: Person) {
+  console.log(p.name, p.age);
+}
+
+printPerson(new Person("jrd", 18));
+printPerson({name: "kobe", age: 30, running: function() {}}); // 通过（鸭子）类型检测
+printPerson(new Dog("旺财", 3)); // 通过类型检测
+~~~
+
