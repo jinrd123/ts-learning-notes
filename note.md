@@ -828,3 +828,32 @@ function getLength(a: any) {
 ~~~
 
 **选择原则：如果需求能使用联合类型来实现，尽量选择联合类型来实现**
+
+# TS中的this
+
+在默认情况下（没有设置ts的配置文件this相关），`this`默认是`any`类型
+
+项目目录下执行`tsc --init`初始化ts配置文件（ts语法检测的一些规则）——`tsconfig.json`
+
+发现生成`tsconfig.json`之后，this就出问题了：函数中的this会报错：
+
+~~~typescript
+function foo() {
+  console.log(this); // 报错，因为this指向谁不明确
+}
+~~~
+
+`tsconfig.json`中有一个this相关的配置项：`"noImplicitThis": true`（implicit：模糊的，隐含的），也就是说不允许ts中的this指向不明，所以上面的代码就报错了。
+
+解决方案：
+
+1. 设置`tsconfig.json`——`"noImplicitThis": false`
+2. 在普通函数中（如上报错的函数），我们需要在函数体的参数列表中，**第一个参数明确指定this及其类型**，然后在调用方法时使用`call`函数，call的第一个参数明确指定this：
+
+~~~typescript
+function foo(this: { name: string }, info: { name: string }) {
+  console.log(this, info); // 这样this就有明确的类型了，ts不报错
+}
+foo.call({ name: "why" }, { name: "kobe" }); // 输出：{ name: "why" }, { name: "kobe" }
+~~~
+
