@@ -1016,3 +1016,20 @@ export {};
 * `public`：默认属性，可任意访问
 * `private`：私有属性，只有在类本身的内部（class定义体内部）才能访问
 * `protected`：保护类型：只有在类本身以及子类的内部才能访问
+
+* 针对成员属性`readonly`修饰符：只读属性
+
+~~~typescript
+class Person {
+  readonly name: string;
+  age: number;
+  constructor(name: string, age: number) {
+    this.name = name;
+    this.age = age;
+  }
+}
+const p = new Person("why", 18);
+p.name = 20; // 报错：只读属性不能修改
+export {}; 
+~~~
+
