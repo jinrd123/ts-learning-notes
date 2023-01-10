@@ -1033,3 +1033,26 @@ p.name = 20; // 报错：只读属性不能修改
 export {}; 
 ~~~
 
+
+
+## 私有属性的getter和setter
+
+~~~typescript
+class Person {
+  private _name: string // 私有属性，属性前面使用 "_"
+	constructor(name: string) {
+    this._name = name;
+  }
+  running() {
+    console.log("running:", this._name);
+  }
+  // 对私有属性的访问与修改进行拦截
+  set name(newValue: string) {
+    this._name = newValue;
+  }
+  get name(): string {
+    return this._name;
+  }
+}
+~~~
+
