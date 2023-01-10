@@ -790,3 +790,22 @@ function sum(...nums: (number | string)[]) {
 foo("anv", 123, "cba");
 ~~~
 
+## 函数的重载
+
+举例：我们希望实现add函数可以把两个数字或者两个字符串进行相加：
+
+~~~typescript
+function sum(a1: number, a2: number): number; // 函数重载签名
+function sum(a1: string, a2: string): string;
+function sum(a1: any, a2: any): any { // 有实现体的通用函数
+  return a1 + a2;
+}
+console.log(sum(10, 20));
+console.log(sum("aaa", "bbb"));
+~~~
+
+ts函数重载的语法构成：
+
+若干个函数重载签名和一个有实现体的通用函数，当我们调用函数时，ts根据我们传入的参数类型来决定执行函数体时，到底执行哪一个函数重载签名（有实现体的函数，是不能被直接调用的）
+
+平时业务开发基本用不到，一般出现在封装一些通用工具的场景中
