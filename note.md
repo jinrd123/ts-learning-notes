@@ -1586,3 +1586,64 @@ ts在执行时会在如下.d.ts文件中查找我们的类型声明：
 * 内置类型声明：我们npm安装ts时就被下载下来了，上面的document等就属于这类文件定义的
 * 外部定义的类型声明：第三方库，比如axios等等
 * 自定义的类型声明
+
+
+
+利用webpack搭建一个自动编译的ts运行环境
+
+`./webpack环境/ts-run-envirenment`：
+
+`npm init -y`
+
+`npm i webpack webpack-cli -D`
+
+`./webpack环境/ts-run-envirenment/webpack.config.js`：
+
+~~~js
+module.exports
+~~~
+
+webpack相关插件：
+
+`npm install html-webpack-plugin -D`&&创建`/index.html`(根目录下)
+
+`npm i webpack-dev-server -D`（开启本地服务）
+
+`npm i ts-loader`
+
+配置package.json:
+
+~~~js
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+
+module.exports = {
+    mode: "development",
+    entry: "./src/index.ts",
+    output: {
+        path: path.resolve(__dirname, "./dist"),
+        filename: "bundle.js"
+    },
+    resolve: {
+        extensions: [".ts", ".js", ".cjs", ".json"]
+    },
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                loader: "ts-loader"
+            }
+        ]
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: "./index.html"
+        })
+    ],
+    devServer: {},
+}
+~~~
+
+生成tsconfig.json（ts-loader需要）：
+
+`tsc --init `
