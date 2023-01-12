@@ -1158,4 +1158,19 @@ interface IPerson {
 
 
 
-3日上午： 1：31——索引签名
+# 索引签名
+
+限制一个对象的属性访问方式（索引的类型）以及属性值的类型
+
+~~~typescript
+interface ICollection {
+  [index: string]: number // 表示此接口类型的对象必须满足：通过string类型的索引访问属性，访问到的属性为number类型
+  length: number // 有一个length属性，其属性值必须是number类型（也受到上面索引签名的约束，所以lenght也必须是number类型）
+}
+
+function iteratorCollection(collection: ICollection) {
+}
+
+iteratorCollection({ name: 111, age: 18, legtn: 10 });
+~~~
+
