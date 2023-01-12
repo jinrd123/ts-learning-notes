@@ -1304,3 +1304,36 @@ let ikun4: IKun = str; // str不是新鲜变量，但不代表就不进行类型
 ​	抽象类只能被单一继承，接口可以被多重实现
 
 ​	抽象类中可以有方法的实现体，接口中只能有函数的声明
+
+
+
+# ts枚举类型
+
+ts增加的新特性而已，用一些常量或者联合类型也能实现效果，当然也可以使用枚举类型：
+
+~~~typescript
+enum Direction { // 定义了枚举类型Direction
+  LEFT, // 默认值为0
+  RIGHT // 默认值为1 
+}
+
+const d1: Direction = Direction.LEFT; 
+function turnDirection(direction: Direction) {
+  switch(direction) {
+    case Direction.LEFT:
+    case Direction.RIGHT:
+      ...
+  }
+}
+~~~
+
+一些源码中喜欢给枚举类型赋值时使用位运算（方便功能相 ｜ 吧）：
+
+~~~typescript
+enum Operation {
+  Read = 1 << 0, // 1左移0位，值为1
+  Write = 1 << 1, // 1左移1位，值为2
+  foo = 1 << 2 // 1左移2位，值为4
+}
+~~~
+
