@@ -1337,3 +1337,107 @@ enum Operation {
 }
 ~~~
 
+
+
+# 泛型编程（ts中的真正难点）
+
+泛型——类型的参数化
+
+基本使用：
+
+~~~typescript
+function bar<Type>(arg: Type): Type {
+  return arg;
+}
+
+// 完整的写法：
+const res1 = bar<number>(123);
+
+// 省略的写法：
+const res2 = bar("aaaaa"); // res2能正确推导出来为string类型 
+~~~
+
+支持多个泛型参数：
+
+~~~typescript
+function foo<T, E>(a1: T, a2: E) {}
+~~~
+
+开发中常用的泛型参数名称：
+
+* T：Type的缩写，类型
+* K，V：key与value
+* E：Element的缩写，元素
+* O：Object的缩写，对象
+
+## 泛型接口
+
+~~~typescript
+interface IKun<T = string> { // 定义接口时使用泛型，并且指定默认值（给函数参数的默认值一样，这里指定类型的默认值）
+  name: T
+  age: number
+  slogan: T
+}
+~~~
+
+## 泛型类
+
+~~~typescript
+class Point<Type = number> {
+  x: Type
+  y: Type
+  constructor(x: Type, y: Type) {
+    this.x = x;
+    this.y = y;
+  }
+}
+~~~
+
+## 泛型约束
+
+基本语法：
+
+<T extends InterfaceB>表示传入的类型必须满足B的要求，也可以有其他属性，但是至少要满足B
+
+需求我们想实现一个函数getInfo，获取传入的内容，内容必须有length属性：
+
+~~~typescript
+interface ILength {
+  length: number
+}
+
+function getInfo<Type extends Ilength>(args: Type): Type { // Type相当于类型变量，用于记录本次函数调用的参数的类型，所以在整个函数的执行周期中，一直保留着参数的类型
+  return args;
+}
+
+const info1 = getInfo("aaaa"); // 最后返回的结果info1就是"aaaa"的类型string，同时也满足了extends指定的约束
+const info2 = getInfo(["aaa", "bbb", "ccc"]); 
+const info3 = getInfo({length: 100});
+~~~
+
+
+
+泛型参数搭配keyof添加约束实例：
+
+~~~typescript
+// plus——keyof的使用：keyof O：keyof后跟一个对象类型，返回结果为对象类型所有属性的类型的联合类型
+interface IKun {
+  name: string
+  age: number
+}
+type IkunKeys = keyof IKun // type IKunKeys = string | number
+
+// 获取对象的某个key的值
+function getObjectProperty<O, K extends keyof O>(obj: O, key: K) {
+  return obj[key];
+}
+
+const info = {
+  name: "why",
+  age: 10,
+  height: 1.88
+}
+
+const name = getObjectProperty(info, "name");
+~~~
+
