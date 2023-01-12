@@ -1647,3 +1647,13 @@ module.exports = {
 生成tsconfig.json（ts-loader需要）：
 
 `tsc --init `
+
+`npm run serve`
+
+
+
+内置声明文件的配置：
+
+其实我们ts文件能正常运行就是因为上面ts-loader的处理，ts-loader对ts文件的处理是基于tsconfig.json文件的。所以我们可以通过配置tsconfig.json来修改ts的各种运行环境，包括一些语言特性（支不支持es6...），随之就会影响内置的ts声明文件。
+
+（项目中我们可能不用ts-loader进行ts文件处理，而是babel
