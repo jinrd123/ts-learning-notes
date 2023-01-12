@@ -1174,3 +1174,114 @@ function iteratorCollection(collection: ICollection) {
 iteratorCollection({ name: 111, age: 18, legtn: 10 });
 ~~~
 
+解释索引签名中的奇怪现象：
+
+~~~typescript
+interface IIndexType {
+    // 索引签名
+    [index: string]: string
+}
+
+// 索引签名：[index: number]: string
+// const names: IIndexType = ["abc", "cba", "nba"]; // 不报错
+
+// [index: string]: any
+// const names: IIndexType = ["abc", "cba", "nba"]; // 不报错
+
+// [index: string]: string
+const names: IIndexType = ["abc", "cba", "nba"]; // 报错：应该是因为["abc", "cba", "nba"]为新鲜变量进行严格类型检测的原因，毕竟["abc", "cba", "nba"]中还有很多方法，比如forEach等，他们的返回值并不是string，这也就是上面any为什么不报错的原因，因为概括了各种方法的返回值
+~~~
+
+plus：索引签名的index类型只能是string或者number，两者的联合类型也不行
+
+plus：还有一些奇奇怪怪的规则，不整理了——day3上午3：28左右的部分
+
+
+
+# 接口的继承特性
+
+`extends`可以从其他接口中继承过来属性
+
+作用：
+
+1. 减少了相同代码的重复编写
+2. 自定义接口时，希望自定义的接口拥有某个类型（第三方库提供的接口）的所有属性，使用继承
+
+~~~typescript
+interface IPerson {
+  name: string
+  age: number
+}
+
+interface IKun extends IPerson {
+  slogan: string
+}
+
+const ikun: IKun = {
+  name: "why",
+  age: 18,
+  slogan: "niganma,aiyou"
+}
+~~~
+
+
+
+
+
+# 接口可以被类实现
+
+~~~typescript
+interface IKun {
+  name: string
+  age: number
+  slogan: string
+  playBasketball: () => void
+}
+
+interface IRun {
+  running: () => void
+}
+
+class Person implements IKun, IRun {
+  name: string
+  age: number
+  slogan: string
+  playBasketball() {}
+  running() {}
+}
+~~~
+
+
+
+
+
+# TS中严格字面量赋值检测
+
+当一个变量第一次被定义时，那么ts认为它是fresh新鲜的，ts将对新鲜的变量进行严格字面量类型检测：变量必须完全满足类型的要求（该有的属性必须要有，**而且不能有多余的属性**）：
+
+~~~typescript
+interface IKun {
+    name: string,
+    age: number,
+}
+
+let str = "";
+let obj = {
+    name: "jrd",
+    age: 20,
+    height: 1.75,
+}
+
+let ikun: IKun = obj; // 不报错：obj已经不是新鲜变量了，它满足了IKun的所有属性要求，多了一个height属性没事
+let ikun2: IKun = { // 不报错：通过严格类型检测
+    name: "why",
+    age: 18,
+}
+let ikun3: IKun = { // 报错：ikun3首次出现，进行严格类型检测，比IKun接口多了一个height属性
+    name: "why",
+    age: 18,
+    height: 1.88,
+}
+let ikun4: IKun = str; // str不是新鲜变量，但不代表就不进行类型检测了，只是说此时类型检测的标准是只要满足拥有接口该有的属性即可，str不满足IKun接口，报错
+~~~
+
