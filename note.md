@@ -1462,3 +1462,110 @@ ts的目的是为js添加一套类型校验系统，因为js本身的灵活性�
 类型体操解析地址：https://ghaiklor.github.io/type-challenges-solutions/en/
 
 （不要舍本逐末，ts只是给js添加类型约束的工具）
+
+
+
+# TS知识拓展
+
+
+
+## ts模块化
+
+### 基本使用与注意事项
+
+TypeScript认为什么是一个模块：
+
+* **js规范中声明任何没有export的js文件都应该是一个js脚本，而非一个模块**
+* 在一个js脚本中，变量和类型会被声明在共享作用域（直观上会造成命名冲突等问题）
+
+如果我们有一个文件，没有任何的import或者export，但是我们希望他被当作一个模块进行处理，添加代码：
+
+~~~typescript
+export {}
+~~~
+
+这会把文件改成一个没有导出任何内容的模块（生成js/ts模块的操作）。
+
+
+
+ts模块导入类型注意事项：
+
+`type.ts`：
+
+~~~typescript
+export interface IPerson {
+  name: string
+  age: number
+}
+
+export type IDType = number | string
+~~~
+
+`index.ts`:
+
+~~~typescript
+import { type IDType, type IPerson } from "./type.ts"; // 在一个模块中导入类型（接口），推荐在类型前面加上type关键字；如果{}中全是类型或者接口，可以把type关键字提取到{}之前即：import type { IDType, IPerson } ...,这样做的目的是方便非ts编译器，比如babel等可以快速移除不相关的导入，提高编译性能
+
+const id1: IDType = 111;
+const p: IPerson = { name: "why", age: 18 };
+~~~
+
+
+
+### 命名空间（了解）
+
+ts自己的一种模块模式，也就是namespaces（命名空间），他是在es模块标准之前出现的
+
+ts官方文档（对命名空间的态度）：
+
+虽然命名空间没有被废弃，但是由于es模块已经拥有了命名空间的大部分特性，因此**更推荐使用es模块**，这样才能与js的发展方向保持一致
+
+`format.ts`：
+
+~~~typescript
+namespace price {
+  function format(price) {
+    return "¥" + price;
+  }
+  const name = "price";
+}
+
+namespace date {
+  function format(dateString) {
+    return "2022-10-10";
+  }
+  const name = "date";
+}
+~~~
+
+这样的话因为没有export，format.ts中的两个命名空间被当作全局变量，其他文件中自然可以直接访问price以及date，但是一般我们这样写：
+
+把命名空间以及命名空间中想提供的变量都进行export：
+
+~~~typescript
+export namespace price {
+  export function format(price) {
+    return "¥" + price;
+  }
+  export const name = "price";
+}
+
+export namespace date {
+  export function format(dateString) {
+    return "2022-10-10";
+  }
+  export const name = "date";
+}
+~~~
+
+`index.ts`：
+
+~~~typescript
+import { price, date } from "./format";
+
+price.format("1111");
+date.format("2222");
+~~~
+
+
+
