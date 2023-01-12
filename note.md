@@ -1441,3 +1441,10 @@ const info = {
 const name = getObjectProperty(info, "name");
 ~~~
 
+
+
+# 映射类型（Mapped Types）
+
+业务开发用不到，应用于源码以及通用工具开发中
+
+暂时跳过：day3，下午，2:27
