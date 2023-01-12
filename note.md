@@ -1448,3 +1448,17 @@ const name = getObjectProperty(info, "name");
 业务开发用不到，应用于源码以及通用工具开发中
 
 暂时跳过：day3，下午，2:27
+
+
+
+
+
+# 内置类型工具和类型体操
+
+ts的目的是为js添加一套类型校验系统，因为js本身的灵活性，所以ts不得不增加更多的功能来适应js的灵活性——ts是一种支持类型编程的类型系统
+
+类型体操地址：https://github.com/type-challenges/type-challenges
+
+类型体操解析地址：https://ghaiklor.github.io/type-challenges-solutions/en/
+
+（不要舍本逐末，ts只是给js添加类型约束的工具）
