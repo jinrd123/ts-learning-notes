@@ -1569,3 +1569,20 @@ date.format("2222");
 
 
 
+## 类型查询
+
+现象引入：
+
+ts中我们可以直接执行如下代码，并且document对象、getElementById方法等都有明确的类型限制：
+
+`const imageEl = document.getElementById("image") as HTMLImageElement;`
+
+### `.d.ts`文件
+
+ts的类型声明文件，这类文件中不写逻辑代码，只用来定义接口以及type
+
+ts在执行时会在如下.d.ts文件中查找我们的类型声明：
+
+* 内置类型声明：我们npm安装ts时就被下载下来了，上面的document等就属于这类文件定义的
+* 外部定义的类型声明：第三方库，比如axios等等
+* 自定义的类型声明
