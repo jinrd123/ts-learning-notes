@@ -671,6 +671,48 @@ function move(animal: ISwim | IRun) {
 
 换句话说，`in`运算符可以避开`.`运算符访问对象属性的行为，这个行为是会被ts进行检查的；ts没有针对in的特殊检查，所以可以判断对象是否有某个属性
 
+上面的类型保护会自动进行类型缩小，但有些情况下需要我们用**类型谓词`is`**手动进行类型缩小，场景：
+
+```ts
+// 判断参数是否为string类型, 返回布尔值
+function isString(s:unknown):boolean{
+  return typeof s === 'string'
+}
+
+// 参数转为大写函数
+// 直接使用转大写方法报错, str有可能是其他类型
+function upperCase(str:unknown){
+  str.toUpperCase()
+  // 类型“unknown”上不存在属性“toUpperCase”。
+}
+
+// 判断参数是否为字符串,是在调用转大写方法
+function ifUpperCase(str:unknown){
+
+  if(isString(str)){
+    str.toUpperCase()
+    // (parameter) str: unknown
+    // 报错:类型“unknown”上不存在属性“toUpperCase”
+  }
+}
+```
+
+也就是说虽然我们的isString方法内部对于参数str进行了类型判断，并且给出了一个布尔类型的返回参数，但是在`ifUpperCase`函数中并没有对str的类型进行缩小，str依然是原本的unknow类型，**对于这种类型判断函数，我们希望除了给出一个布尔类型的判断结果之外还能对传入的参数进行类型缩小，这就需要用到类型谓词is：**
+
+```ts
+function isString(s:unknown):s is string{ // s is string表示：函数返回类型为布尔类型，如果为true，那么参数s自动类型缩小为string
+  return typeof s === 'string'
+}
+
+function ifUpperCase(str:unknown){
+
+  if(isString(str)){
+    str.toUpperCase()
+    // (parameter) str: string
+  }
+}
+```
+
 # 函数类型
 
 ## 函数类型表达式
