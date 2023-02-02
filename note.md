@@ -1694,8 +1694,81 @@ module.exports = {
 
 
 
-内置声明文件的配置：
+### 内置声明文件的配置：
 
 其实我们ts文件能正常运行就是因为上面ts-loader的处理，ts-loader对ts文件的处理是基于tsconfig.json文件的。所以我们可以通过配置tsconfig.json来修改ts的各种运行环境，包括一些语言特性（支不支持es6...），随之就会影响内置的ts声明文件。
 
 （项目中我们可能不用ts-loader进行ts文件处理，而是babel
+
+### 外部定义的类型声明文件
+
+在我们ts环境的项目中，一些三方库，比如axios，我们安装axios的时候，这个包里就包含了它的`.d.ts`类型声明文件，我们在项目里就可以直接使用axios了。
+
+还有一种情况，比如react，我们npm i react之后import发现报错，因为react这个包本身缺少类型声明文件，**不是说react里的代码缺少类型逻辑（人家react本身就使用js写的），而是说我们的ts项目不认识这个第三方模块**，我们这时候一般还要单独安装他的类型声明文件相关的包，比如：`npm i @type/react --save-dev`，这样才能`import React from "react"`不报错。
+
+### 自定义类型声明文件
+
+有一些三方包，网络上也没有它的类型声明文件（让ts识别他的配置文件），这时候我们安装了这玩意之后，我们在我们的ts项目中直接import是会报错的，所以我们需要自定义一个`.d.ts`类型声明文件，让ts项目认识这个包——知道这个包是一个模块：
+
+`jrd.d.ts`
+
+~~~typescript
+declare module "jrd" {
+  export function join(...args: any[]): any
+}
+~~~
+
+`index.ts`
+
+~~~typescript
+import JRD from "jrd"; // 有了上面的配置，ts就能识别jrd模块了，并且我们在调用JRD.join方法时也会给出相应的类型提示
+~~~
+
+#### 使用场景：
+
+1. 引入的三方库没有类型声明文件，ts不识别相关模块，我们自己在`.d.ts`文件中`declare module`声明
+
+2. 我们确定在代码运行起来的时候某些地方一定有某个变量，而且确定它的类型，但是我们ts项目中暂时并没有这个变量，这时候我们就可以在`.d.ts`文件中声明它的类型。声明之后ts就不会报错了：
+
+   比如我们在`index.html`中的一个<script>标签中定义了三个变量，我们ts项目中并没有这三个变量，但是打包完之后，ts项目会被引入到`index.html`中，这样的话我们就能在`.d.ts`中先声明出来这三个变量，这样ts就不会报错了（我们自己保证逻辑上它运行时不会出错）
+
+3. 文件模块的模块声明写在`.d.ts`里
+
+## 模块声明
+
+一些文件模块，比如一张`.png`图片，我们在ts项目中引入时ts是不识别这个文件作为一个模块的，所以我们会在`.d.ts`中声明文件模块：
+
+~~~typescript
+// 这种文件模块声明就不需要指明模块内容了
+declare module "*.png"
+declare module "*.jpg"
+declare module "*.jpeg"
+declare module "*.svg"
+// 一般的模块声明
+declare module "moduleName" {
+  // 模块里面的类型定义
+}
+~~~
+
+vue+ts的项目中，`.vue`的文件ts默认也是不识别的，需要我们在`.d.ts`文件中声明`.vue`文件模块：
+
+~~~typescript
+// 度成长项目中翻到的
+declare module '*.vue' {
+  import type {DefineComponent} from 'vue';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const component: DefineComponent<{}, {}, any>;
+  export default component;
+}
+~~~
+
+## .d.ts文件中声明命名空间(很少见)
+
+我们在`index.html`中通过cdn的方式引入了一个包，比如jq，理论上来说我们的项目中完全可以使用jq的东西的，但是ts项目不识别，这时候我们按照上面在`.d.ts`文件中声明一个模块是不行的，因为我们根本不需要import引入这个模块了，所以我们这时候声明一个命名空间才是最合适的，因为命名空间是不要像模块一样引入就生效的：
+
+~~~typescript
+declare namespace $ {
+  export function ajax(...): ...
+}
+~~~
+
