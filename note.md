@@ -1491,7 +1491,7 @@ const name = getObjectProperty(info, "name");
 
 暂时跳过：day3，下午，2:27
 
-
+## 基本使用
 
 
 
@@ -1772,3 +1772,81 @@ declare namespace $ {
 }
 ~~~
 
+# axios封装（空）
+
+# 条件类型
+
+## 条件类型的基本使用
+
+~~~typescript
+function sum<T extends number | string>(arg1: T, arg2: T): T extends string ? string : number; // 函数签名
+function sum(arg1: any, arg2: any) {
+  return arg1 + arg2
+}
+~~~
+
+因为ts默认会进行一些类型判断给我们的变量一个类型，但是这个类型可能不是我们想要的。**条件类型说白了就是根据ts自动判断出来的类型的一些特性（"abc" extends string，ts默认给我们一个字面量类型"abc"，他满足extends string，所以返回修改成string类型），然后我们修改成我们想要的类型**，有点类似于三元运算符。
+
+## 内置工具ReturnType
+
+`ReturnType<myTypeOfMyFn>`返回传入的函数类型的返回值的类型：
+
+~~~typescript
+type CalcFnType = (num1: number, num2: number) => number
+
+function foo() {
+  return "abc";
+}
+
+type CalcReturnType = ReturnType<CalcFnType>;
+type FooReturnType = ReturnType<typeof foo>
+~~~
+
+## 条件类型中推断（infer）
+
+https://www.jianshu.com/p/707a304d7752
+
+`infer`语法的限制如下：
+
+1. `infer`只能在条件类型的 extends 子句中使用
+2. `infer`得到的类型只能在`true`语句中使用, 即`X`中使用
+
+自己实现ReturnType（取到函数的返回值）
+
+~~~typescript
+type MyReturnType<T extends (...args: any[]) => any> = T extends (...args: any[]) => infer R ? R : never;
+~~~
+
+**解析：MyReturnType<T extends (...args: any[]) => any>这里的<T extends (...args: any[]) => any>是限制传入MyReturnType的类型为一个函数类型；因为我们只想要这个函数类型的一个部分（返回值）的类型，所以我们想用infer，infer放在函数返回值类型变量的前面就好了，但是infer只能在extends子句中出现，所以T extends (...args: any[]) => infer R ? R : never这里再写一遍extends是为了使用infer**
+
+**infer出现在extends子句的任意一个类型变量的前面，说白了就是让ts去拿到（推断）这个变量的类型，然后我们就可以去使用这个类型**
+
+### 举例：
+
+推断数组(或者元组)的类型
+
+```rust
+type InferArray<T> = T extends (infer U)[] ? U : never;
+```
+
+```tsx
+type I0 = InferArray<[number, string]>; // string | number
+type I1 = InferArray<string[]>; // string
+type I2 = InferArray<number[]>; // number
+```
+
+推断某个函数类型的参数的类型：
+
+~~~typescript
+type MyParamters<T extends (...args: any[]) => any> = T extends (...args: infer P) => any ? P : never;
+~~~
+
+## 分发条件类型
+
+![image-20230203110752836](./image/:Users:jinrongda:Library:Application Support:typora-user-images:image-20230203110752836.png)
+
+白话：给条件类型传类型参数的时候（toArray为条件类型，因为用了extends，toArray<number | string>就是给toArray传递了一个number ｜ string类型），如果传入的是联合类型，相当于联合类型的各部分分开传给条件类型，最后条件类型的结果再联合起来。
+
+# ts内置工具
+
+3.44（前置映射类型）
