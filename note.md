@@ -1379,6 +1379,33 @@ enum Operation {
 }
 ~~~
 
+## 应用实例
+
+
+
+**总结：enum对象完全可以理解为一个普通js对象，但是我们可以省略写属性值，它自动从0依次递增赋值，我们也可以不省略，即给枚举属性赋值，那么就完全和给对象的属性赋值一样了**
+
+~~~typescript
+enum Color {
+  Red, // 0
+  Green, // 1
+  Blue // 2
+}
+
+enum Color {
+  DarkRed = 3, // 3
+  DarkGreen, // 4
+  DarkBlue // 5
+}
+
+enum MyEnum {
+  First = "First String",
+  Second = "Second String",
+  Third
+}
+console.log(MyEnum.Third); // 输出 2
+~~~
+
 
 
 # 泛型编程（ts中的真正难点）
@@ -1726,7 +1753,7 @@ import JRD from "jrd"; // 有了上面的配置，ts就能识别jrd模块了，�
 
 #### 使用场景：
 
-1. 引入的三方库没有类型声明文件，ts不识别相关模块，我们自己在`.d.ts`文件中`declare module`声明
+1. 引入的三方库没有类型声明文件，ts不识别相关模块，我们自己在`.d.ts`文件中`declare module`声明ap
 
 2. 我们确定在代码运行起来的时候某些地方一定有某个变量，而且确定它的类型，但是我们ts项目中暂时并没有这个变量，这时候我们就可以在`.d.ts`文件中声明它的类型。声明之后ts就不会报错了：
 
